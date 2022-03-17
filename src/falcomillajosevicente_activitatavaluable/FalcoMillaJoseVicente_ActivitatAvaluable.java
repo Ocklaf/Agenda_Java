@@ -4,6 +4,7 @@
  */
 package falcomillajosevicente_activitatavaluable;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -12,54 +13,69 @@ import java.util.Scanner;
  */
 public class FalcoMillaJoseVicente_ActivitatAvaluable {
 
+    static Scanner in = new Scanner(System.in); //lo hago static para que pertenezca a la clase y no tener que instanciarlo constantemente
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
         menu();
     }
 
-    public static void menu() {
+    public static void menu() throws InputMismatchException { //Tratamos la posible excepción en la entrada del menú, aunque no podremos continuar
         Agenda agenda = new Agenda();
-        Scanner in = new Scanner(System.in);
-        int opcion = 0;
+        int opcion;
 
-        do {
-            System.out.println("Elija una opcion");
-            System.out.print("1. Añadir Contacto Persona\n2. Añadir Contacto Empresa\n3. Eliminar Contacto\n4. Verificar si existe\n5. Buscar contacto\n6. Mostrar todos los contactos\n7. Salir\n");
-            opcion = in.nextInt();
+        try {
+            do {
+                System.out.print("Elija una opción\n\n1. Añadir Contacto Persona\n2. Añadir Contacto Empresa\n3. Eliminar Contacto\n4. Existe contacto?\n"
+                        + "5. Número posición del contacto en la agenda\n6. Mostrar todos los contactos\n7. Salir\n");
+                opcion = in.nextInt();
+                in.nextLine();
 
-            switch (opcion) {
-                case 1:
-                    agenda.introducirContacto(contactoPersona());
-                    opcion = 0;
-                    break;
-                case 2:
-                    agenda.introducirContacto(contactoEmpresa());
-                    opcion = 0;
-                    break;
-                case 3:
-                    agenda.eliminarContacto(eliminarContacto());
-                    opcion = 0;
-                    break;
-                case 4:
-                    agenda.existeContacto(existeContacto());
-                    opcion = 0;
-                    break;
-                case 6:
-                    agenda.listarContactos();
-                    opcion = 0;
-                    break;
-                case 7:
-                    System.out.println("AGENDA CERRADA");
-                    break;
-            }
-        } while (opcion < 1 || opcion > 7);
+                switch (opcion) {
+//pongo la salida sólo para que se vea que nos devuelve un true/false, he puesto un mensaje en cada caso, así que es sólo porque así se nos solicita                
+                    case 1:
+                        System.out.println(agenda.introducirContacto(contactoPersona()));//Quitando todos los println obtenemos sólo el mensaje establecido
+                        opcion = 0;
+                        break;
+//pongo la salida sólo para que se vea que nos devuelve un true/false, he puesto un mensaje en cada caso, así que es sólo porque así se nos solicita                    
+                    case 2:
+                        System.out.println(agenda.introducirContacto(contactoEmpresa()));//Quitando todos los println obtenemos sólo el mensaje establecido
+                        opcion = 0;
+                        break;
+//pongo la salida sólo para que se vea que nos devuelve un true/false, he puesto un mensaje en cada caso, así que es sólo porque así se nos solicita                    
+                    case 3:
+                        System.out.println(agenda.eliminarContacto(nombreContacto()));//Quitando todos los println obtenemos sólo el mensaje establecido
+                        opcion = 0;
+                        break;
+//pongo la salida sólo para que se vea que nos devuelve un true/false, he puesto un mensaje en cada caso, así que es sólo porque así se nos solicita                    
+                    case 4:
+                        System.out.println(agenda.existeContacto(nombreContacto()));//Quitando todos los println obtenemos sólo el mensaje establecido
+                        opcion = 0;
+                        break;
+                    case 5:
+                        System.out.println(agenda.buscarContacto(nombreContacto()));//Aquí no hay salida establecida, así que el println es necesario para ver el número de la posición en la agenda
+                        opcion = 0;
+                        break;
+                    case 6:
+                        agenda.listarContactos(); //Listar todos los contactos
+                        System.out.println("");
+                        opcion = 0;
+                        break;
+                    case 7:
+                        System.out.println("AGENDA CERRADA");
+                        break;
+                }
+            } while (opcion < 1 || opcion > 7);
+        } catch (InputMismatchException e) { //Lanzamos el mensaje del error cometido
+            System.out.println("El valor introducido debe ser numérico y entero, no son válidos carácteres diferenctes ni letras");
+        } finally{
+            in.close(); //Cerramos el recurso de la consola siempre tras cada selección
+        }
     }
 
-    public static Contacto contactoPersona() {
-        Scanner in = new Scanner(System.in);
+    public static Contacto contactoPersona() { //Solicitamos datos para crear un objeto ContactoPersona
         String nombre, telefono, fechaNacimiento;
 
         System.out.println("Dime el nombre completo de la persona");
@@ -74,8 +90,7 @@ public class FalcoMillaJoseVicente_ActivitatAvaluable {
         return p;
     }
 
-    public static Contacto contactoEmpresa() {
-        Scanner in = new Scanner(System.in);
+    public static Contacto contactoEmpresa() { //Solicitamos datos para crear un objeto ContactoEmpresa
         String nombre, telefono, web;
 
         System.out.println("Dime el nombre completo de la empresa");
@@ -90,8 +105,7 @@ public class FalcoMillaJoseVicente_ActivitatAvaluable {
         return e;
     }
 
-    public static String eliminarContacto() {
-        Scanner in = new Scanner(System.in);
+    public static String nombreContacto() { //Utilizamos la misma función para todas las búsquedas en las que necesitamos el nombre del contacto en la Agenda
         String nombre;
 
         System.out.println("Dime el nombre exacto del contacto");
@@ -99,15 +113,4 @@ public class FalcoMillaJoseVicente_ActivitatAvaluable {
 
         return nombre;
     }
-
-    public static String existeContacto() {
-        Scanner in = new Scanner(System.in);
-        String nombre;
-
-        System.out.println("Dime el nombre exacto del contacto");
-        nombre = in.nextLine();
-
-        return nombre;
-    }
-
 }
